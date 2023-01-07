@@ -8,7 +8,7 @@ return require('packer').startup(function()
     -- ПЛАГИНЫ ВНЕШНЕГО ВИДА
     -----------------------------------------------------------
     -- Цветовая схема
-    use 'joshdick/onedark.vim'
+    --use 'joshdick/onedark.vim'
     use 'ayu-theme/ayu-vim'
     --- Информационная строка внизу
     use { 'nvim-lualine/lualine.nvim',

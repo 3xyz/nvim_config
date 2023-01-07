@@ -7,6 +7,9 @@ g.mapleader = ','
 -- Направление перевода с русского на английский
 g.translate_source = 'ru'
 g.translate_target = 'en'
+-- Отключение дефолтного файлового менеджера
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
 -- Компактный вид у тагбара и Отк. сортировка по имени у тагбара
 g.tagbar_compact = 1
 g.tagbar_sort = 0
