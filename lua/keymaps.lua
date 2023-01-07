@@ -27,7 +27,7 @@ vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>b', builtin.buffers, {})
 vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
 -- nvim tree
-map('n', '<Space><Tab>', ':Neotree<cr>', default_opts)
+map('n', '<Space><Tab>', ':Neotree toggle<cr>', default_opts)
 -- tagbar
 --map('n', '<leader>t', ':TagbarToggle<CR>', default_opts)
 -- ale

@@ -16,14 +16,14 @@ return require('packer').startup(function()
     use { 'nvim-lualine/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}, }
     -- Табы вверху
-    use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons', }
+    use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons' }
 
     -----------------------------------------------------------
     -- НАВИГАЦИЯ
     -----------------------------------------------------------
     -- Файловый менеджер
     --use 'nvim-neo-tree/neo-tree.nvim'
-    use 's1n7ax/nvim-window-picker'
+    --use 's1n7ax/nvim-window-picker'
     use {
       "nvim-neo-tree/neo-tree.nvim",
         branch = "v2.x",
@@ -31,11 +31,11 @@ return require('packer').startup(function()
           "nvim-lua/plenary.nvim",
           "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
           "MunifTanjim/nui.nvim",
-          {
-            -- only needed if you want to use the commands with "_with_window_picker" suffix
-            's1n7ax/nvim-window-picker',
-            tag = "v1.*",
-          }
+          --{
+          --  -- only needed if you want to use the commands with "_with_window_picker" suffix
+          --  's1n7ax/nvim-window-picker',
+          --  tag = "v1.*",
+          --}
         },
     }
     --use { 'kyazdani42/nvim-tree.lua',
