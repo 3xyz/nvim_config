@@ -1,8 +1,7 @@
 local map = vim.api.nvim_set_keymap
 local default_opts = {noremap = true, silent = true}
 
--- Системный буфер обмена shift - Y
-map('v', 'S-Y', '"+y', {})
+
 -- Типа 'Нажимает' на ESC при быстром нажатии jj, чтобы не тянутся
 map('i', 'jj', '<Esc>', {noremap = true})
 -- очищаем последний поиск с подсветкой
