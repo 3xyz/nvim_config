@@ -16,8 +16,8 @@ g.tagbar_sort = 0
 
 -- Конфиг ale + eslint
 g.ale_fixers = { javascript= { 'eslint' } }
-g.ale_sign_error = '❌'
-g.ale_sign_warning = '⚠️'
+g.ale_sign_error = '🥵'
+g.ale_sign_warning = '🥶'
 g.ale_fix_on_save = 1
 -- Запуск линтера, только при сохранении
 g.ale_lint_on_text_changed = 'never'
@@ -67,7 +67,7 @@ cmd [[au BufEnter * set fo-=c fo-=r fo-=o]]
 cmd [[autocmd FileType text,markdown,html,xhtml,javascript setlocal cc=0]]
 -- 2 spaces for selected filetypes
 cmd [[
-autocmd FileType xml,html,xhtml,css,scss,javascript,lua,yaml,htmljinja setlocal shiftwidth=2 tabstop=2
+autocmd FileType bash,c,xml,html,xhtml,css,scss,javascript,lua,yaml,htmljinja setlocal shiftwidth=2 tabstop=2
 ]]
 -- С этой строкой отлично форматирует html файл, который содержит jinja2
 cmd[[ autocmd BufNewFile,BufRead *.html set filetype=htmldjango ]]
@@ -123,6 +123,10 @@ vim.o.completeopt = 'menuone,noselect'
 -- luasnip setup
 local luasnip = require 'luasnip'
 -- nvim-cmp setup
+local has_words_before = function()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  return (vim.api.nvim_buf_get_lines(0, cursor[1] - 1, cursor[1], true)[1] or ''):sub(cursor[2], cursor[2]):match('%s') 
+end
 local cmp = require 'cmp'
 cmp.setup {
     snippet = {
@@ -136,8 +140,6 @@ cmp.setup {
           cmp.select_next_item()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
-        elseif has_words_before() then
-          cmp.complete()
         else
           fallback()
         end
@@ -174,6 +176,7 @@ cmp.setup {
 },
 }
 
+-- neo-tree
 -----------------------------------------------------------
 -- Прочие плагины
 -----------------------------------------------------------
