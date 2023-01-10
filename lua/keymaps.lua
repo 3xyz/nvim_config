@@ -2,6 +2,9 @@ local map = vim.api.nvim_set_keymap
 local default_opts = {noremap = true, silent = true}
 
 
+-- Удаление без копирования
+map('n', 'x', '"_x', default_opts)
+map('v', 'p', '"_dP', default_opts)
 -- Типа 'Нажимает' на ESC при быстром нажатии jj, чтобы не тянутся
 map('i', 'jj', '<Esc>', {noremap = true})
 -- очищаем последний поиск с подсветкой
