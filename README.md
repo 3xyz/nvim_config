@@ -1,5 +1,5 @@
 #### Install dependencies
-#This config require some patched [ fonts ](https://www.nerdfonts.com/).
+This config require some patched [fonts](https://www.nerdfonts.com/).
 ---
 #### nvim
 Install config
