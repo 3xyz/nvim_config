@@ -244,7 +244,7 @@ require("neo-tree").setup({
   },
 })
 
-require('refactoring').setup()
+-- require('refactoring').setup()
 -----------------------------------------------------------
 -- Прочие плагины
 -----------------------------------------------------------
@@ -312,6 +312,7 @@ local lsp_flags = {
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = { 'pyright' }
+local nvim_lsp = require'lspconfig'
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
