@@ -2,7 +2,7 @@
 This config require some patched [fonts](https://www.nerdfonts.com/).
 ___
 #### nvim
-Install configm (You must have delete previous config (if exist) `rm -rf ~/.config/nvim`)
+Config installation (You must have delete previous config (if exist) `rm -rf ~/.config/nvim`)
 ```
 git clone --depth 1 https://github.com/3xyz/nvim.git ~/.config/nvim
 ```
