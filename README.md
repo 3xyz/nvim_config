@@ -4,7 +4,7 @@ ___
 #### nvim
 Install configm (You must have delete previous config (if exist) `rm -rf ~/.config/nvim`)
 ```
-git clone --depth 1 https://github.com/3xyz/nvim_lua_config.git ~/.config/
+git clone --depth 1 https://github.com/3xyz/nvim.git ~/.config/
 ```
 Install Packer (Plugin installer)
 ```
