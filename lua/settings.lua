@@ -5,6 +5,7 @@ local opt = vim.opt             -- global/buffer/windows-scoped options
 
 cmd [[set mouse=a]]
 g.mapleader = ','
+g.tokyonight_transparent = g.transparent_enabled
 -- Направление перевода с русского на английский
 g.translate_source = 'ru'
 g.translate_target = 'en'
@@ -17,8 +18,8 @@ g.tagbar_sort = 0
 
 -- Конфиг ale + eslint
 g.ale_fixers = { javascript= { 'eslint' } }
-g.ale_sign_error = '🥵'
-g.ale_sign_warning = '🥶'
+g.ale_sign_error = '❌'
+g.ale_sign_warning = '⚠️'
 g.ale_fix_on_save = 1
 -- Запуск линтера, только при сохранении
 g.ale_lint_on_text_changed = 'never'
@@ -27,7 +28,7 @@ g.ale_lint_on_insert_leave = 0
 -----------------------------------------------------------
 -- Главные
 -----------------------------------------------------------
-opt.colorcolumn = '80'              -- Разделитель на 80 символов
+-- opt.colorcolumn = '80'              -- Разделитель на 80 символов
 opt.cursorline = true               -- Подсветка строки с курсором
 opt.spelllang= { 'en_us', 'ru' }    -- Словари рус eng
 opt.number = true                   -- Включаем нумерацию строк
@@ -44,13 +45,19 @@ opt.clipboard = "unnamedplus"       -- общий буфер обмена
 opt.termguicolors = true      --  24-bit RGB colors
 --cmd 'colorscheme onedark'
 cmd 'colorscheme ayu'
-require('lualine').setup()
+require('lualine').setup({})
+-- require('lualine').setup({
+--   options = {
+--     theme = require('transparent_lualine').theme()
+--   }
+-- })
 local function update_hl(group, tbl)
 	local old_hl = vim.api.nvim_get_hl_by_name(group, true)
 	local new_hl = vim.tbl_extend('force', old_hl, tbl)
 	vim.api.nvim_set_hl(0, group, new_hl)
 end
 update_hl('Comment', { italic = true })
+
 
 -----------------------------------------------------------
 -- Табы и отступы
@@ -93,31 +100,16 @@ autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "norm
 -- Установки для плагинов
 -----------------------------------------------------------
 -- LSP settings
-local lsp_installer = require("nvim-lsp-installer")
-lsp_installer.on_server_ready(function(server)
-    local opts = {}
-    if server.name == "sumneko_lua" then
-        -- only apply these settings for the "sumneko_lua" server
-        opts.settings = {
-            Lua = {
-                diagnostics = {
-                    -- Get the language server to recognize the 'vim', 'use' global
-                    globals = {'vim', 'use'},
-                },
-                workspace = {
-                    -- Make the server aware of Neovim runtime files
-                    library = vim.api.nvim_get_runtime_file("", true),
-                },
-                -- Do not send telemetry data containing a randomized but unique identifier
-                telemetry = {
-                    enable = false,
-                },
-            },
+require("nvim-lsp-installer").setup({
+    automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
+    ui = {
+        icons = {
+            server_installed = "✓",
+            server_pending = "➜",
+            server_uninstalled = "✗"
         }
-    end
-    server:setup(opts)
-end)
-
+    }
+})
 -- nvim-cmp supports additional completion capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
@@ -207,6 +199,7 @@ vim.fn.sign_define("DiagnosticSignHint",
 -- NOTE: this is changed from v1.x, which used the old style of highlight groups
 -- in the form "LspDiagnosticsSignWarning"
 
+
 require("neo-tree").setup({
   close_if_last_window = true,
   enable_git_status = true,
@@ -220,8 +213,8 @@ require("neo-tree").setup({
     end
     }
   },
-  window = { 
-    width = 34, 
+  window = {
+    width = 34,
     mappings = {
       ["q"] = "close_window",
     }
@@ -237,6 +230,7 @@ require("neo-tree").setup({
         --"node_modules"
       },
       hide_by_pattern = { -- uses glob style patterns
+        '*.db'
         --"*.meta",
         --"*/src/*/tsconfig.json",
       },
@@ -244,21 +238,83 @@ require("neo-tree").setup({
         --".gitignored",
       },
       never_show = {
-        --".DS_Store",
-        --"thumbs.db"
+        ".DS_Store",
       },
     },
   },
 })
 
+require('refactoring').setup()
 -----------------------------------------------------------
 -- Прочие плагины
 -----------------------------------------------------------
-require('bufferline').setup {
+require('bufferline').setup{
     options = {
         mode = "tabs", -- set to "tabs" to only show tabpages instead
     }
 }
 require('Comment').setup()
-require('lualine').setup()
-require("auto-save").setup{}
+-- require("auto-save").setup{}
+-- require("transparent").setup({
+--   enable = true, -- boolean: enable transparent
+--   extra_groups = { -- table/string: additional groups that should be cleared
+--     -- In particular, when you set it to 'all', that means all available groups
+--
+--     -- example of akinsho/nvim-bufferline.lua
+--     -- 'akinsho/bufferline.nvim',
+--     "BufferLineTabClose",
+--     "BufferlineBufferSelected",
+--     "BufferLineFill",
+--     "BufferLineBackground",
+--     "BufferLineSeparator",
+--     "BufferLineIndicatorSelected",
+--   },
+--   exclude = {}, -- table: groups you don't want to clear
+-- })
+
+-- Mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, bufopts)
+  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+end
+
+local lsp_flags = {
+  -- This is the default in Nvim 0.7+
+  debounce_text_changes = 150,
+}
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { 'pyright' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = lsp_flags,
+  }
+end

@@ -17,36 +17,7 @@ return require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true}, }
     -- Табы вверху
     use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons' }
-
-    -----------------------------------------------------------
-    -- НАВИГАЦИЯ
-    -----------------------------------------------------------
-    -- Файловый менеджер
-    --use 'nvim-neo-tree/neo-tree.nvim'
-    --use 's1n7ax/nvim-window-picker'
-    use {
-      "nvim-neo-tree/neo-tree.nvim",
-        branch = "v2.x",
-        requires = { 
-          "nvim-lua/plenary.nvim",
-          "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-          "MunifTanjim/nui.nvim",
-          --{
-          --  -- only needed if you want to use the commands with "_with_window_picker" suffix
-          --  's1n7ax/nvim-window-picker',
-          --  tag = "v1.*",
-          --}
-        },
-    }
-    --use { 'kyazdani42/nvim-tree.lua',
-    --requires = 'kyazdani42/nvim-web-devicons',
-    --config = function() require'nvim-tree'.setup {} end, }
-    -- Навигация внутри файла по классам и функциям
-    --use 'majutsushi/tagbar'
-    -- Замена fzf и ack
-    use { 'nvim-telescope/telescope.nvim',
-    requires = { {'nvim-lua/plenary.nvim'} },
-    config = function() require'telescope'.setup {} end, }
+    use 'xiyaowong/nvim-transparent'
 
     -----------------------------------------------------------
     -- LSP и автодополнялка
@@ -65,6 +36,46 @@ return require('packer').startup(function()
     use 'hrsh7th/cmp-path'
     -- Snippets plugin
     use 'L3MON4D3/LuaSnip'
+
+    -----------------------------------------------------------
+    -- НАВИГАЦИЯ
+    -----------------------------------------------------------
+    -- Файловый менеджер
+    --use 'nvim-neo-tree/neo-tree.nvim'
+    --use 's1n7ax/nvim-window-picker'
+    use {
+      "nvim-neo-tree/neo-tree.nvim",
+        branch = "v2.x",
+        requires = {
+          "nvim-lua/plenary.nvim",
+          "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+          "MunifTanjim/nui.nvim",
+          --{
+          --  -- only needed if you want to use the commands with "_with_window_picker" suffix
+          --  's1n7ax/nvim-window-picker',
+          --  tag = "v1.*",
+          --}
+        },
+    }
+    --use { 'kyazdani42/nvim-tree.lua',
+    --requires = 'kyazdani42/nvim-web-devicons',
+    --config = function() require'nvim-tree'.setup {} end, }
+    -- Навигация внутри файла по классам и функциям
+    --use 'majutsushi/tagbar'
+    -- Замена fzf и ack
+    use { 'nvim-telescope/telescope.nvim',
+      requires = {
+        {'nvim-lua/plenary.nvim'}
+      },
+    }
+    use {
+      "ThePrimeagen/refactoring.nvim",
+      requires = {
+          "nvim-lua/plenary.nvim",
+          "nvim-treesitter/nvim-treesitter",
+      }
+    }
+
 
     -----------------------------------------------------------
     -- PYTHON
@@ -97,7 +108,7 @@ return require('packer').startup(function()
     use 'tpope/vim-repeat'
     -- Закрывает автоматом скобки
     use 'cohama/lexima.vim'
-    use "Pocco81/auto-save.nvim"
+    -- use "Pocco81/auto-save.nvim"
     -- Комментирует по gc все, вне зависимости от языка программирования
     use 'numToStr/Comment.nvim'
     -- Считает кол-во совпадений при поиске

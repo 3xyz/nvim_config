@@ -30,13 +30,34 @@ vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>b', builtin.buffers, {})
 vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
 -- nvim tree
-map('n', '<Space><Tab>', ':Neotree toggle<cr>', default_opts)
--- tagbar
---map('n', '<leader>t', ':TagbarToggle<CR>', default_opts)
+map('n', '<leader><Tab>', ':Neotree toggle<cr>', default_opts)
 -- ale
-map('n', 'gd', ':ALEGoToDefinition<CR>', default_opts)
+-- map('n', 'gd', ':ALEGoToDefinition<CR>', default_opts)
+map("v", "<leader>rf", ":lua require('refactoring').select_refactor()<CR>", { noremap = true, silent = true, expr = false })
+-- Mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
-
+-- require('lspconfig')['pyright'].setup{
+--     on_attach = on_attach,
+--     flags = lsp_flags
+-- }
+-- require('lspconfig')['tsserver'].setup{
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+-- }
+-- require('lspconfig')['rust_analyzer'].setup{
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     -- Server-specific settings...
+--     settings = {
+--       ["rust-analyzer"] = {}
+--     }
+-- }
 -----------------------------------------------------------
 -- Фн. клавиши по F1 .. F12
 -----------------------------------------------------------
