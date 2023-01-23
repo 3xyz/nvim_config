@@ -2,6 +2,7 @@ local map = vim.api.nvim_set_keymap
 local default_opts = {noremap = true, silent = true}
 
 
+map('n', 'ZZ', ':wqa<CR>', default_opts)
 -- Удаление без копирования
 map('n', 'x', '"_x', default_opts)
 map('v', 'p', '"_dP', default_opts)
@@ -42,22 +43,7 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
--- require('lspconfig')['pyright'].setup{
---     on_attach = on_attach,
---     flags = lsp_flags
--- }
--- require('lspconfig')['tsserver'].setup{
---     on_attach = on_attach,
---     flags = lsp_flags,
--- }
--- require('lspconfig')['rust_analyzer'].setup{
---     on_attach = on_attach,
---     flags = lsp_flags,
---     -- Server-specific settings...
---     settings = {
---       ["rust-analyzer"] = {}
---     }
--- }
+
 -----------------------------------------------------------
 -- Фн. клавиши по F1 .. F12
 -----------------------------------------------------------

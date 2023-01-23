@@ -1,10 +1,55 @@
+local vim = vim
 local cmd = vim.cmd             -- execute Vim commands
 local exec = vim.api.nvim_exec  -- execute Vimscript
 local g = vim.g                 -- global variables
 local opt = vim.opt             -- global/buffer/windows-scoped options
+local api = vim.api
 
+
+-- functions foldind with trsitter
+opt.foldcolumn = "0"
+opt.foldlevelstart = -1
+opt.foldenable = true
+opt.foldlevel = 99
+opt.foldmethod = "expr"
+opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+function _G.custom_fold_text()
+    local line = vim.fn.getline(vim.v.foldstart)
+    local line_count = vim.v.foldend - vim.v.foldstart + 1
+    return " ⚡ " .. line .. ": " .. line_count .. " lines"
+end
+
+vim.opt.foldtext = custom_fold_text()
+vim.opt.fillchars = { eob = "-", fold = " " }
+vim.opt.viewoptions:remove("options")
+
+local M = {}
+-- function to create a list of commands and convert them to autocommands
+-------- This function is taken from https://github.com/norcalli/nvim_utils
+function M.nvim_create_augroups(definitions)
+    for group_name, definition in pairs(definitions) do
+        api.nvim_command('augroup '..group_name)
+        api.nvim_command('autocmd!')
+        for _, def in ipairs(definition) do
+            local command = table.concat(vim.tbl_flatten{'autocmd', def}, ' ')
+            api.nvim_command(command)
+        end
+        api.nvim_command('augroup END')
+    end
+end
+local autoCommands = {
+    -- other autocommands
+    open_folds = {
+        {"BufReadPost,FileReadPost", "*", "normal zR"}
+    }
+}
+-- M.nvim_create_augroups(autoCommands)
+-- mouse
 cmd [[set mouse=a]]
 g.mapleader = ','
+-- g.mapleader = '<space>'
+-- g.transparent_enabled = false
 g.tokyonight_transparent = g.transparent_enabled
 -- Направление перевода с русского на английский
 g.translate_source = 'ru'
@@ -15,6 +60,9 @@ g.loaded_netrwPlugin = 1
 -- Компактный вид у тагбара и Отк. сортировка по имени у тагбара
 g.tagbar_compact = 1
 g.tagbar_sort = 0
+-- Подсветка вертикальной линии
+-- cmd [[set cursorcolumn]]
+-- cmd [[set cursorline]]
 
 -- Конфиг ale + eslint
 g.ale_fixers = { javascript= { 'eslint' } }
@@ -44,6 +92,7 @@ opt.clipboard = "unnamedplus"       -- общий буфер обмена
 -----------------------------------------------------------
 opt.termguicolors = true      --  24-bit RGB colors
 --cmd 'colorscheme onedark'
+cmd [[let ayucolor="mirage"]] -- "dark" | "light"
 cmd 'colorscheme ayu'
 require('lualine').setup({})
 -- require('lualine').setup({
@@ -202,9 +251,7 @@ vim.fn.sign_define("DiagnosticSignHint",
 
 require("neo-tree").setup({
   close_if_last_window = true,
-  enable_git_status = true,
-  enable_diagnostics = true,
-  event_handlers = {
+  enable_git_status = true, enable_diagnostics = true, event_handlers = {
           {
     event = "file_opened",
     handler = function(file_path)
@@ -216,6 +263,7 @@ require("neo-tree").setup({
   window = {
     width = 34,
     mappings = {
+      ["o"] = "open",
       ["q"] = "close_window",
     }
   },
@@ -230,6 +278,7 @@ require("neo-tree").setup({
         --"node_modules"
       },
       hide_by_pattern = { -- uses glob style patterns
+        "__pycache__",
         '*.db'
         --"*.meta",
         --"*/src/*/tsconfig.json",
@@ -240,6 +289,9 @@ require("neo-tree").setup({
       never_show = {
         ".DS_Store",
       },
+      never_show_by_pattern = { -- uses glob style patterns
+        --".null-ls_*",
+      },
     },
   },
 })
@@ -249,29 +301,56 @@ require("neo-tree").setup({
 -- Прочие плагины
 -----------------------------------------------------------
 require('bufferline').setup{
+    highlights = {
+        buffer_selected = { italic = false },
+        diagnostic_selected = { italic = false },
+        hint_selected = { italic = false },
+        pick_selected = { italic = false },
+        pick_visible = { italic = false },
+        pick = { italic = false },
+    },
     options = {
         mode = "tabs", -- set to "tabs" to only show tabpages instead
+        indicator = {
+            icon = '▎', -- this should be omitted if indicator style is not 'icon'
+            style = 'underline',
+        },
+        -- right_trunc_marker = "|",
+--         numbers = "ordinal",
+--         max_name_length = 15,
+--         max_prefix_length = 6,
+--         diagnostics = "nvim_lsp",
+         show_buffer_icons = false,
+         show_close_icon = false,
+         show_buffer_close_icons = false,
     }
 }
 require('Comment').setup()
 -- require("auto-save").setup{}
--- require("transparent").setup({
---   enable = true, -- boolean: enable transparent
---   extra_groups = { -- table/string: additional groups that should be cleared
---     -- In particular, when you set it to 'all', that means all available groups
---
---     -- example of akinsho/nvim-bufferline.lua
---     -- 'akinsho/bufferline.nvim',
---     "BufferLineTabClose",
---     "BufferlineBufferSelected",
---     "BufferLineFill",
---     "BufferLineBackground",
---     "BufferLineSeparator",
---     "BufferLineIndicatorSelected",
---   },
---   exclude = {}, -- table: groups you don't want to clear
--- })
+function transparent_my()
+  opt.cursorline = false
+  require('lualine').setup({
+    options = {
+      theme = require('transparent_lualine').theme()
+    }
+  })
+  require("transparent").setup({
+    enable = true, -- boolean: enable transparent
+    extra_groups = { -- table/string: additional groups that should be cleared
+      -- In particular, when you set it to 'all', that means all available groups
 
+      -- example of akinsho/nvim-bufferline.lua
+      "BufferLineTabClose",
+      "BufferlineBufferSelected",
+      "BufferLineFill",
+      "BufferLineBackground",
+      "BufferLineSeparator",
+      "BufferLineIndicatorSelected",
+    },
+    exclude = {}, -- table: groups you don't want to clear
+  })
+end
+transparent_my()
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
@@ -319,3 +398,70 @@ for _, lsp in ipairs(servers) do
     flags = lsp_flags,
   }
 end
+
+-- require'lsp_signature'.on_attach({
+--     bind = true, -- This is mandatory, otherwise border config won't get registered.
+--     floating_window = true,
+--     floating_window_above_cur_line = true,
+--     floating_window_off_x = 20,
+--     doc_lines = 10,
+--     hint_prefix = '👻 '
+-- }, bufnr)  -- Note: add in lsp client on-attach
+
+cmd [[
+set nofoldenable
+set foldlevel=99
+set fillchars=fold:\
+setlocal foldmethod=expr
+set foldtext=CustomFoldText()
+setlocal foldexpr=GetPotionFold(v:lnum)
+
+function! GetPotionFold(lnum)
+  if getline(a:lnum) =~? '\v^\s*$'
+    return '-1'
+  endif
+  let this_indent = IndentLevel(a:lnum)
+  let next_indent = IndentLevel(NextNonBlankLine(a:lnum))
+  if next_indent == this_indent
+    return this_indent
+  elseif next_indent < this_indent
+    return this_indent
+  elseif next_indent > this_indent
+    return '>' . next_indent
+  endif
+endfunction
+
+function! IndentLevel(lnum)
+    return indent(a:lnum) / &shiftwidth
+endfunction
+
+function! NextNonBlankLine(lnum)
+  let numlines = line('$')
+  let current = a:lnum + 1
+  while current <= numlines
+      if getline(current) =~? '\v\S'
+          return current
+      endif
+      let current += 1
+  endwhile
+  return -2
+endfunction
+
+function! CustomFoldText()
+  " get first non-blank line
+  let fs = v:foldstart
+  while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+  endwhile
+  if fs > v:foldend
+      let line = getline(v:foldstart)
+  else
+      let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+  endif
+  let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+  let foldSize = 1 + v:foldend - v:foldstart
+  let foldSizeStr = " " . foldSize . " lines "
+  let foldLevelStr = repeat("+--", v:foldlevel)
+  let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
+  return line . expansionString . foldSizeStr . foldLevelStr
+endfunction
+]]

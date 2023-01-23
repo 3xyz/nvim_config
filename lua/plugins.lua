@@ -75,8 +75,9 @@ return require('packer').startup(function()
           "nvim-treesitter/nvim-treesitter",
       }
     }
-
-
+    use {
+      "ray-x/lsp_signature.nvim",
+    }
     -----------------------------------------------------------
     -- PYTHON
     -----------------------------------------------------------
@@ -123,4 +124,11 @@ return require('packer').startup(function()
     use 'nvim-lua/popup.nvim'
     -- Обрамляет строку в теги по ctrl- y + ,
     use 'mattn/emmet-vim'
+
+    -- -- folding
+    -- use{ 'anuvyklack/pretty-fold.nvim',
+    --    config = function()
+    --       require('pretty-fold').setup()
+    --    end
+    -- }
 end)
