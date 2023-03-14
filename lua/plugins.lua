@@ -1,4 +1,4 @@
-vim.cmd [[packadd packer.nvim]]
+-- vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
     -- Packer сам себя
@@ -16,7 +16,7 @@ return require('packer').startup(function()
     use { 'nvim-lualine/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}, }
     -- Табы вверху
-    use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons' }
+    use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'kyazdani42/nvim-web-devicons' }
     use 'xiyaowong/nvim-transparent'
 
     -----------------------------------------------------------
@@ -36,6 +36,8 @@ return require('packer').startup(function()
     use 'hrsh7th/cmp-path'
     -- Snippets plugin
     use 'L3MON4D3/LuaSnip'
+    -- code runner
+    use { 'michaelb/sniprun', run = 'bash ./install.sh'}
 
     -----------------------------------------------------------
     -- НАВИГАЦИЯ
@@ -124,6 +126,9 @@ return require('packer').startup(function()
     use 'nvim-lua/popup.nvim'
     -- Обрамляет строку в теги по ctrl- y + ,
     use 'mattn/emmet-vim'
+    -- Найти и заменить
+    use 'nvim-lua/plenary.nvim'
+    use 'windwp/nvim-spectre'
 
     -- -- folding
     -- use{ 'anuvyklack/pretty-fold.nvim',
